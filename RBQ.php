@@ -10,7 +10,7 @@ class RBQ extends PluginBase{
             '女装',
             '抖M',
             '大JJ',
-            '巨乳',
+            '惊天巨乳',
             '贫乳',
             '双马尾',
             '傲娇',
@@ -19,7 +19,9 @@ class RBQ extends PluginBase{
             '智障',
             '发情期',
             '扶她',
-            '名器级'
+            '名器级',
+            '人妻',
+            '全自动'
         ];
 
     private $map;

@@ -13,8 +13,10 @@ class ShindanMaker extends PluginBase{
         setEncPost([
             'u' => $nickname,
         ])->exec();
-        preg_match('/<textarea id=\"copy_text_140\" class=\"form-control\" .*>(.*)\n/iU', $html, $tgt);
-        return $tgt[1];
+        $a = explode('<div class="result2">', $html);
+        $b = explode('</div>', $a[1]);
+        $rs = str_replace('&nbsp;', ' ', strip_tags($b[0]));
+        return $rs;
     }
 
     public function onReceive(){
