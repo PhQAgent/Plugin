@@ -16,6 +16,7 @@ class ShindanMaker extends PluginBase{
         $a = explode('<div class="result2">', $html);
         $b = explode('</div>', $a[1]);
         $rs = str_replace('&nbsp;', ' ', strip_tags($b[0]));
+        $rs = str_replace("\n\n", "\n", $rs);
         return $rs;
     }
 
@@ -27,6 +28,11 @@ class ShindanMaker extends PluginBase{
         if(strstr($this->getMessage(), '今日关键词')){
             $this->reply("{$this->getshindan(384482, $this->getNickName())}\n\n本外部数据由 ShindanMaker 提供");
         }
+
+        if(strstr($this->getMessage(), '娘化穿越到异世界')){
+            $this->reply("{$this->getshindan(635902, $this->getNickName())}\n\n本外部数据由 ShindanMaker 提供");
+        }
+
     }
 
 }
