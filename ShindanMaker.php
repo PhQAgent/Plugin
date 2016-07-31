@@ -1,6 +1,10 @@
 <?php
+namespace plugin;
 use plugin\PluginBase;
+use element\Message;
+use element\ReplyMessage;
 use utils\Curl;
+
 class ShindanMaker extends PluginBase{
     
     public function onLoad(){

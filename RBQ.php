@@ -1,5 +1,9 @@
 <?php
+namespace plugin;
 use plugin\PluginBase;
+use element\Message;
+use element\ReplyMessage;
+
 class RBQ extends PluginBase{
 
     public function onLoad(){
@@ -21,29 +25,32 @@ class RBQ extends PluginBase{
             '扶她',
             '名器级',
             '人妻',
-            '全自动'
+            '全自动',
+            '吃口球'
         ];
 
     private $map;
 
-    private function writelog(){
-        if($this->getType() == 'group_message'){
-            if(!isset($this->map[$this->getFrom()])){
-                $this->map[$this->getFrom()] = [];
+    private function writelog($message){
+        if($message->getType() == Message::GROUP){
+            if(!isset($this->map[$message->getGroup()->getUin()])){
+                $this->map[$message->getGroup()->getUin()] = [];
             }
-            foreach($this->map[$this->getFrom()] as $user){
-                if($user == $this->getNickName()){
+            
+            foreach($this->map[$message->getGroup()->getUin()] as $user){
+                if($user == $message->getGroup()->getNick($message->getGroup())){
                     return true;
                 }
             }
-            if(count($this->map[$this->getFrom()]) < 10){
-                $this->map[$this->getFrom()][] = $this->getNickName();
-            }elseif(count($this->map[$this->getFrom()]) == 10){
-                unset($this->map[$this->getFrom()][0]);
-                $this->map[$this->getFrom()] = array_values($this->map[$this->getFrom()]);
+            
+            if(count($this->map[$message->getGroup()->getUin()]) < 10){
+                $this->map[$message->getGroup()->getUin()][] = $message->getUser()->getNick($message->getGroup());
+            }elseif(count($this->map[$message->getGroup()->getUin()]) == 10){
+                unset($this->map[$message->getGroup()->getUin()][0]);
+                $this->map[$message->getGroup()->getUin()] = array_values($this->map[$message->getGroup()->getUin()]);
             }
-            if(count($this->map[$this->getFrom()]) > 10){
-                unset($this->map[$this->getFrom()]);
+            if(count($this->map[$message->getGroup()->getUin()]) > 10){
+                unset($this->map[$message->getGroup()->getUin()]);
             }
         }
     }
@@ -52,23 +59,26 @@ class RBQ extends PluginBase{
         return $this->type[mt_rand(0, count($this->type) - 1)];
     }
 
-    private function getRBQ(){
-        $list = $this->map[$this->getFrom()];
+    private function getRBQ($message){
+        $list = $this->map[$message->getGroup()->getUin()];
         $rbq = $list[mt_rand(0, count($list) - 1)];
-        if($rbq !== $this->getNickName()){
-            return "{$this->getNickName()} 获得了一个 {$this->getRBQType()} 的 $rbq 作为RBQ";
+        $nick = $message->getUser()->getNick($message->getGroup());
+        if($rbq !== $nick){
+            return "$nick 获得了一个 {$this->getRBQType()} 的 $rbq 作为RBQ";
         }else{
-            return "{$this->getNickName()} 脸太黑，只能当别人的RBQ";
+            return "$nick 脸太黑，只能当别人的RBQ";
         }
         
     }
 
-    public function onReceive(){
-        $this->writelog();
-        if(strstr($this->getMessage(), '!rbq')){
-            $arg = explode('!rbq ', $this->getMessage());
+    public function onReceive(Message $message){
+        $this->writelog($message);
+        if(strstr($message->getContent(), '!rbq')){
+            $arg = explode('!rbq ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $this->reply($this->getRBQ());
+            $msg = $this->getRBQ($message);
+            $this->getServer()->getLogger()->info($msg);
+            $this->send((new ReplyMessage($message))->setContent($msg));
         }
     }
 

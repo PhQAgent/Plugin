@@ -1,5 +1,9 @@
 <?php
+namespace plugin;
 use plugin\PluginBase;
+use element\Message;
+use element\ReplyMessage;
+
 class MP extends PluginBase{
 
     private $map;
