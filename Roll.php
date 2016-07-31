@@ -3,7 +3,6 @@ namespace plugin;
 use plugin\PluginBase;
 use element\Message;
 use element\ReplyMessage;
-use worker\MessageSender;
 
 class Roll extends PluginBase{
 
@@ -23,9 +22,7 @@ class Roll extends PluginBase{
             $arg = isset($arg[1]) ? $arg[1] : '';
             $random = $this->getRandom($arg);
             $nick = $message->getUser()->getNick($message->getGroup());
-            new MessageSender(
-                (new ReplyMessage($message))->setContent("@$nick rolled $random point(s)")
-            );
+            $this->send((new ReplyMessage($message))->setContent("$nick rolled $random point(s)"));
             $this->getServer()->getLogger()->info("$nick rolled $random point(s)");
         }
     }
