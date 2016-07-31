@@ -24,17 +24,29 @@ class ShindanMaker extends PluginBase{
         return $rs;
     }
 
-    public function onReceive(){
-        if(strstr($this->getMessage(), '我的二次元美少女形象')){
-            $this->reply("{$this->getshindan(162207, $this->getNickName())}\n\n本外部数据由 ShindanMaker 提供");
+    public function onReceive(Message $message){
+        if(strstr($message->getContent(), '我的二次元美少女形象')){
+            $rs = $this->getshindan(162207, $message->getUser()->getNick($message->getGroup()));
+            $msg = new ReplyMessage($message);
+            $msg->setContent("$rs\n\n本外部数据由 ShindanMaker 提供");
+            $this->send($msg);
+            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 进行了 我的二次元美少女形象 测试');
         }
 
-        if(strstr($this->getMessage(), '今日关键词')){
-            $this->reply("{$this->getshindan(384482, $this->getNickName())}\n\n本外部数据由 ShindanMaker 提供");
+        if(strstr($message->getContent(), '今日关键词')){
+            $rs = $this->getshindan(384482, $message->getUser()->getNick($message->getGroup()));
+            $msg = new ReplyMessage($message);
+            $msg->setContent("$rs\n\n本外部数据由 ShindanMaker 提供");
+            $this->send($msg);
+            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 进行了 今日关键词 测试');
         }
 
-        if(strstr($this->getMessage(), '娘化穿越到异世界')){
-            $this->reply("{$this->getshindan(635902, $this->getNickName())}\n\n本外部数据由 ShindanMaker 提供");
+        if(strstr($message->getContent(), '娘化穿越到异世界')){
+            $rs = $this->getshindan(635902, $message->getUser()->getNick($message->getGroup()));
+            $msg = new ReplyMessage($message);
+            $msg->setContent("$rs\n\n本外部数据由 ShindanMaker 提供");
+            $this->send($msg);
+            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 进行了 娘化穿越到异世界 测试');
         }
 
     }
