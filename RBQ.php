@@ -38,7 +38,7 @@ class RBQ extends PluginBase{
             }
             
             foreach($this->map[$message->getGroup()->getUin()] as $user){
-                if($user == $message->getGroup()->getNick($message->getGroup())){
+                if($user == $message->getUser()->getNick($message->getGroup())){
                     return true;
                 }
             }

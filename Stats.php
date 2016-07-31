@@ -46,29 +46,37 @@ class Stats extends PluginBase{
         return "Performance: {$pp}pp\nRank: #{$rank}\nHit Accuracy: {$acc}%\nPlay Time: {$pt}\nTotal Hits: {$tth}";
     }
 
-    public function onReceive(){
-        if(strstr($this->getMessage(), '!stats ')){
-            $arg = explode('!stats ', $this->getMessage());
+    public function onReceive(Message $message){
+        if(strstr($message->getContent(), '!stats ')){
+            $arg = explode('!stats ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $this->reply("{$arg}\n{$this->getStats(0, $arg)}");
+            $msg = "{$arg}\n{$this->getStats(0, $arg)}";
+            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 std 模式排名');
+            $this->send((new ReplyMessage($message))->setContent($msg));
         }
 
-        if(strstr($this->getMessage(), '!taiko ')){
-            $arg = explode('!taiko ', $this->getMessage());
+        if(strstr($message->getContent(), '!taiko ')){
+            $arg = explode('!taiko ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $this->reply("{$arg}\n{$this->getStats(1, $arg)}");
+            $msg = "{$arg}\n{$this->getStats(1, $arg)}";
+            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 taiko 模式排名');
+            $this->send((new ReplyMessage($message))->setContent($msg));
         }
 
-        if(strstr($this->getMessage(), '!ctb ')){
-            $arg = explode('!ctb ', $this->getMessage());
+        if(strstr($message->getContent(), '!ctb ')){
+            $arg = explode('!ctb ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $this->reply("{$arg}\n{$this->getStats(2, $arg)}");
+            $msg = "{$arg}\n{$this->getStats(2, $arg)}";
+            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 ctb 模式排名');
+            $this->send((new ReplyMessage($message))->setContent($msg));
         }
         
-        if(strstr($this->getMessage(), '!mania ')){
-            $arg = explode('!mania ', $this->getMessage());
+        if(strstr($message->getContent(), '!mania ')){
+            $arg = explode('!mania ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $this->reply("{$arg}\n{$this->getStats(3, $arg)}");
+            $msg = "{$arg}\n{$this->getStats(3, $arg)}";
+            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 mania 模式排名');
+            $this->send((new ReplyMessage($message))->setContent($msg));
         }
     }
 
