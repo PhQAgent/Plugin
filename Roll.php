@@ -1,5 +1,9 @@
 <?php
+namespace plugin;
 use plugin\PluginBase;
+use element\Message;
+use element\ReplyMessage;
+use worker\MessageSender;
 
 class Roll extends PluginBase{
 
@@ -13,11 +17,16 @@ class Roll extends PluginBase{
         return mt_rand($min, $max);
     }
 
-    public function onReceive(){
-        if(strstr($this->getMessage(), '!roll')){
-            $arg = explode('!roll ', $this->getMessage());
+    public function onReceive(Message $message){
+        if(strstr($message->getContent(), '!roll')){
+            $arg = explode('!roll ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $this->reply("@{$this->getNickName()} rolled {$this->getRandom($arg)} point(s)");
+            $random = $this->getRandom($arg);
+            $nick = $message->getUser()->getNick($message->getGroup());
+            new MessageSender(
+                (new ReplyMessage($message))->setContent("@$nick rolled $random point(s)")
+            );
+            $this->getServer()->getLogger()->info("$nick rolled $random point(s)");
         }
     }
 
