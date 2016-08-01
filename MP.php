@@ -28,10 +28,10 @@ class MP extends PluginBase{
                         $payload .= "$player\n";
                     }
                     $count = count($data['player']);
-                    return "参与您的: $gn 的玩家有\n{$payload}共{$count}人";
+                    return "参与 " . $message->getUser()->getNick($message->getGroup()) . " 的: $gn 的玩家有\n{$payload}共{$count}人";
                 }else{
                     $this->map[$message->getGroup()->getUin()][$gn]['player'][$message->getUser()->getUin()] = $this->getNickName();
-                    return "您已报名参加: $gn";
+                    return $message->getUser()->getNick($message->getGroup()) . " 已报名参加: $gn";
                 }
             }
         }else{

@@ -50,7 +50,12 @@ class Stats extends PluginBase{
         if(strstr($message->getContent(), '!stats ')){
             $arg = explode('!stats ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $msg = "{$arg}\n{$this->getStats(0, $arg)}";
+            $rs = $this->getStats(0, $arg);
+            if($rs){
+                $msg = "Account: $arg\nMode: Std\n$rs";
+            }else{
+                $msg = "账户 $arg 不存在";
+            }
             $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 std 模式排名');
             $this->send((new ReplyMessage($message))->setContent($msg));
         }
@@ -58,7 +63,12 @@ class Stats extends PluginBase{
         if(strstr($message->getContent(), '!taiko ')){
             $arg = explode('!taiko ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $msg = "{$arg}\n{$this->getStats(1, $arg)}";
+            $rs = $this->getStats(1, $arg);
+            if($rs){
+                $msg = "Account: $arg\nMode: Taiko\n$rs";
+            }else{
+                $msg = "账户 $arg 不存在";
+            }
             $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 taiko 模式排名');
             $this->send((new ReplyMessage($message))->setContent($msg));
         }
@@ -66,7 +76,12 @@ class Stats extends PluginBase{
         if(strstr($message->getContent(), '!ctb ')){
             $arg = explode('!ctb ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $msg = "{$arg}\n{$this->getStats(2, $arg)}";
+            $rs = $this->getStats(2, $arg);
+            if($rs){
+                $msg = "Account: $arg\nMode: Ctb\n$rs";
+            }else{
+                $msg = "账户 $arg 不存在";
+            }
             $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 ctb 模式排名');
             $this->send((new ReplyMessage($message))->setContent($msg));
         }
@@ -74,7 +89,12 @@ class Stats extends PluginBase{
         if(strstr($message->getContent(), '!mania ')){
             $arg = explode('!mania ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
-            $msg = "{$arg}\n{$this->getStats(3, $arg)}";
+            $rs = $this->getStats(1, $arg);
+            if($rs){
+                $msg = "Account: $arg\nMode: Mania\n$rs";
+            }else{
+                $msg = "账户 $arg 不存在";
+            }
             $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 mania 模式排名');
             $this->send((new ReplyMessage($message))->setContent($msg));
         }
