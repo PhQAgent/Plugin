@@ -30,7 +30,7 @@ class MP extends PluginBase{
                     $count = count($data['player']);
                     return "参与 " . $message->getUser()->getNick($message->getGroup()) . " 的: $gn 的玩家有\n{$payload}共{$count}人";
                 }else{
-                    $this->map[$message->getGroup()->getUin()][$gn]['player'][$message->getUser()->getUin()] = $this->getNickName();
+                    $this->map[$message->getGroup()->getUin()][$gn]['player'][$message->getUser()->getUin()] = $message->getUser()->getNick($message->getGroup());
                     return $message->getUser()->getNick($message->getGroup()) . " 已报名参加: $gn";
                 }
             }
