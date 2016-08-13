@@ -6,9 +6,7 @@ use element\ReplyMessage;
 
 class RBQ extends PluginBase{
 
-    public function onLoad(){
-        $this->getServer()->getLogger()->info('随机RBQ插件已加载!');
-    }
+    private $conf;
 
     private $type = [
             '女装',
@@ -30,6 +28,31 @@ class RBQ extends PluginBase{
         ];
 
     private $map;
+
+    public function onLoad(){
+        $this->conf = __DIR__.DIRECTORY_SEPARATOR.'rbq.json';
+        if(!file_exists($this->conf)){
+            $this->getServer()->getLogger()->warning('初始化配置数据库');
+            $this->saveDB();
+        }else{
+            $this->getServer()->getLogger()->info('载入数据库中……');
+            $this->loadDB();
+        }
+        $this->getServer()->getLogger()->info('随机RBQ插件已加载!');
+    }
+
+    private function saveDB(){
+        file_put_contents($this->conf, json_encode($this->type));
+    }
+
+    private function loadDB(){
+        $db = json_decode(file_get_contents($this->conf), 1);
+        if(!is_array($db)){
+            $this->getServer()->getLogger()->alert('数据损坏');
+            return;
+        }
+        $this->type = $db;
+    }
 
     private function writelog($message){
         if($message->getType() == Message::GROUP){
@@ -73,13 +96,35 @@ class RBQ extends PluginBase{
 
     public function onReceive(Message $message){
         $this->writelog($message);
+        if(strstr($message->getContent(), '!rbqtype')){
+            $arg = explode('!rbqtype ', $message->getContent());
+            $arg = isset($arg[1]) ? $arg[1] : '';
+            if(trim($arg) !== ''){
+                if(!in_array($arg, $this->type)){
+                    $this->type[] = $arg;
+                    $this->saveDB();
+                    $msg = "已添加RBQ类型: $arg";
+                }else{
+                    $msg = "RBQ类型: $arg 已存在";
+                }
+                
+                $this->getServer()->getLogger()->info($msg);
+                $this->send((new ReplyMessage($message))->setContent($msg));
+            }else{
+                $this->send((new ReplyMessage($message))->setContent("添加RBQ类型用法: !rbqtype 类型"));
+            }
+            return;
+        }
+        
         if(strstr($message->getContent(), '!rbq')){
             $arg = explode('!rbq ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
             $msg = $this->getRBQ($message);
             $this->getServer()->getLogger()->info($msg);
             $this->send((new ReplyMessage($message))->setContent($msg));
+            return;
         }
+        
     }
 
 }
