@@ -18,9 +18,9 @@ class Stats extends PluginBase{
         if(!isset($userid[1]) or (trim($userid[1]) == null)){
             return false;
         }
-        $ua = explode('<div class="profile-username">', $html_o);
+        $ua = explode('<div class="profile-username".*>', $html_o);
         $ub = explode('</div>', $ua[1]);
-        $username = $ub[0];
+        $username = str_replace("\n", '', $ub[0]);
         $userid = $userid[1];
         $html = $curl->setUrl("https://osu.ppy.sh/pages/include/profile-general.php")->
         setGet([
