@@ -1,8 +1,8 @@
 <?php
 namespace plugin;
-use plugin\PluginBase;
-use element\Message;
-use element\ReplyMessage;
+use phqagent\plugin\PluginBase;
+use phqagent\message\Message;
+use phqagent\console\MainLogger;
 
 class RBQ extends PluginBase{
 
@@ -30,15 +30,15 @@ class RBQ extends PluginBase{
     private $map;
 
     public function onLoad(){
-        $this->conf = __DIR__.DIRECTORY_SEPARATOR.'rbq.json';
+        $this->conf = $this->getDataDir('RBQ').'rbq.json';
         if(!file_exists($this->conf)){
-            $this->getServer()->getLogger()->warning('初始化配置数据库');
+            MainLogger::warning('初始化配置数据库');
             $this->saveDB();
         }else{
-            $this->getServer()->getLogger()->info('载入数据库中……');
+            MainLogger::info('载入数据库中……');
             $this->loadDB();
         }
-        $this->getServer()->getLogger()->info('随机RBQ插件已加载!');
+        MainLogger::info('随机RBQ插件已加载!');
     }
 
     private function saveDB(){
@@ -48,7 +48,7 @@ class RBQ extends PluginBase{
     private function loadDB(){
         $db = json_decode(file_get_contents($this->conf), 1);
         if(!is_array($db)){
-            $this->getServer()->getLogger()->alert('数据损坏');
+            MainLogger::alert('数据损坏');
             return;
         }
         $this->type = $db;
@@ -61,13 +61,13 @@ class RBQ extends PluginBase{
             }
             
             foreach($this->map[$message->getGroup()->getUin()] as $user){
-                if($user == $message->getUser()->getNick($message->getGroup())){
+                if($user == $message->getUser()->getCard()){
                     return true;
                 }
             }
             
             if(count($this->map[$message->getGroup()->getUin()]) < 10){
-                $this->map[$message->getGroup()->getUin()][] = $message->getUser()->getNick($message->getGroup());
+                $this->map[$message->getGroup()->getUin()][] = $message->getUser()->getCard();
             }elseif(count($this->map[$message->getGroup()->getUin()]) == 10){
                 unset($this->map[$message->getGroup()->getUin()][0]);
                 $this->map[$message->getGroup()->getUin()] = array_values($this->map[$message->getGroup()->getUin()]);
@@ -85,16 +85,16 @@ class RBQ extends PluginBase{
     private function getRBQ($message){
         $list = $this->map[$message->getGroup()->getUin()];
         $rbq = $list[mt_rand(0, count($list) - 1)];
-        $nick = $message->getUser()->getNick($message->getGroup());
+        $nick = $message->getUser()->getCard();
         if($rbq !== $nick){
-            return "$nick 获得了一个 {$this->getRBQType()} 的 $rbq 作为RBQ";
+            return "$nick 获得了一个 {$this->getRBQType()} 的 $rbq";
         }else{
             return "$nick 脸太黑，只能当别人的RBQ";
         }
         
     }
 
-    public function onReceive(Message $message){
+    public function onMessageReceive(Message $message){
         $this->writelog($message);
         if(strstr($message->getContent(), '!rbqtype')){
             $arg = explode('!rbqtype ', $message->getContent());
@@ -107,9 +107,8 @@ class RBQ extends PluginBase{
                 }else{
                     $msg = "RBQ类型: $arg 已存在";
                 }
-                
-                $this->getServer()->getLogger()->info($msg);
-                $this->send((new ReplyMessage($message))->setContent($msg));
+                MainLogger::info($message->getUser->getCard() . ' : ' . $message);
+                new Message($message, $msg, true);
             }else{
                 $this->send((new ReplyMessage($message))->setContent("添加RBQ类型用法: !rbqtype 类型"));
             }
@@ -120,8 +119,8 @@ class RBQ extends PluginBase{
             $arg = explode('!rbq ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
             $msg = $this->getRBQ($message);
-            $this->getServer()->getLogger()->info($msg);
-            $this->send((new ReplyMessage($message))->setContent($msg));
+            MainLogger::info($message->getUser()->getCard() . ' : ' . $message);
+            new Message($message, $msg, true);
             return;
         }
         

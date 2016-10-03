@@ -1,14 +1,14 @@
 <?php
 namespace plugin;
-use plugin\PluginBase;
-use element\Message;
-use element\ReplyMessage;
-use utils\Curl;
+use phqagent\plugin\PluginBase;
+use phqagent\message\Message;
+use phqagent\console\MainLogger;
+use phqagent\utils\Curl;
 
 class Stats extends PluginBase{
 
     public function onLoad(){
-        $this->getServer()->getLogger()->info('ppy的恶俗成绩查询插件已加载!');
+        MainLogger::info('ppy的恶俗成绩查询插件已加载!');
     }
 
     private function getStats($m, $player){
@@ -18,7 +18,8 @@ class Stats extends PluginBase{
         if(!isset($userid[1]) or (trim($userid[1]) == null)){
             return false;
         }
-        $ua = explode('<div class="profile-username".*>', $html_o);
+        $start = preg_match('/<div class="profile-userna.*>/iU', $html_o, $ustart);
+        $ua = explode($ustart[0], $html_o);
         $ub = explode('</div>', $ua[1]);
         $username = str_replace("\n", '', $ub[0]);
         $userid = $userid[1];
@@ -106,7 +107,7 @@ class Stats extends PluginBase{
         ];
     }
 
-    public function onReceive(Message $message){
+    public function onMessageReceive(Message $message){
         if(strstr($message->getContent(), '!stats ')){
             $arg = explode('!stats ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
@@ -116,8 +117,21 @@ class Stats extends PluginBase{
             }else{
                 $msg = "账户 $arg 不存在";
             }
-            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 std 模式排名');
-            $this->send((new ReplyMessage($message))->setContent($msg));
+            MainLogger::info($message->getUser()->getCard(). ' 请求了 ' . $arg . ' 的 std 模式排名');
+            new Message($message, $msg, true);
+        }
+
+        if(strstr($message->getContent(), '!std ')){
+            $arg = explode('!std ', $message->getContent());
+            $arg = isset($arg[1]) ? $arg[1] : '';
+            $rs = $this->getStats(0, $arg);
+            if($rs){
+                $msg = $rs;
+            }else{
+                $msg = "账户 $arg 不存在";
+            }
+            MainLogger::info($message->getUser()->getCard(). ' 请求了 ' . $arg . ' 的 std 模式排名');
+            new Message($message, $msg, true);
         }
 
         if(strstr($message->getContent(), '!taiko ')){
@@ -129,8 +143,8 @@ class Stats extends PluginBase{
             }else{
                 $msg = "账户 $arg 不存在";
             }
-            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 taiko 模式排名');
-            $this->send((new ReplyMessage($message))->setContent($msg));
+            MainLogger::info($message->getUser()->getCard(). ' 请求了 ' . $arg . ' 的 taiko 模式排名');
+            new Message($message, $msg, true);
         }
 
         if(strstr($message->getContent(), '!ctb ')){
@@ -142,8 +156,8 @@ class Stats extends PluginBase{
             }else{
                 $msg = "账户 $arg 不存在";
             }
-            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 ctb 模式排名');
-            $this->send((new ReplyMessage($message))->setContent($msg));
+            MainLogger::info($message->getUser()->getCard(). ' 请求了 ' . $arg . ' 的 ctb 模式排名');
+            new Message($message, $msg, true);
         }
         
         if(strstr($message->getContent(), '!mania ')){
@@ -155,8 +169,8 @@ class Stats extends PluginBase{
             }else{
                 $msg = "账户 $arg 不存在";
             }
-            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()). ' 请求了 '.$arg.' 的 mania 模式排名');
-            $this->send((new ReplyMessage($message))->setContent($msg));
+            MainLogger::info($message->getUser()->getCard(). ' 请求了 ' . $arg . ' 的 mania 模式排名');
+            new Message($message, $msg, true);
         }
     }
 

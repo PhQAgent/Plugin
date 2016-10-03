@@ -1,15 +1,15 @@
 <?php
 namespace plugin;
-use plugin\PluginBase;
-use element\Message;
-use element\ReplyMessage;
+use phqagent\plugin\PluginBase;
+use phqagent\message\Message;
+use phqagent\console\MainLogger;
 
 class MP extends PluginBase{
 
     private $map;
 
     public function onLoad(){
-        $this->getServer()->getLogger()->info('MultiPlayer提议插件开启');
+        MainLogger::info('MultiPlayer提议插件开启');
     }
 
     private function createMP($message, $gn){
@@ -28,10 +28,10 @@ class MP extends PluginBase{
                         $payload .= "$player\n";
                     }
                     $count = count($data['player']);
-                    return "参与 " . $message->getUser()->getNick($message->getGroup()) . " 的: $gn 的玩家有\n{$payload}共{$count}人";
+                    return "参与 " . $message->getUser()->getCard() . " 的: $gn 的成员有\n{$payload}\n共{$count}人";
                 }else{
-                    $this->map[$message->getGroup()->getUin()][$gn]['player'][$message->getUser()->getUin()] = $message->getUser()->getNick($message->getGroup());
-                    return $message->getUser()->getNick($message->getGroup()) . " 已报名参加: $gn";
+                    $this->map[$message->getGroup()->getUin()][$gn]['player'][$message->getUser()->getUin()] = $message->getUser()->getCard();
+                    return $message->getUser()->getCard() . " 已报名参加: $gn";
                 }
             }
         }else{
@@ -45,15 +45,13 @@ class MP extends PluginBase{
         }
     }
 
-    public function onReceive(Message $message){
+    public function onMessageReceive(Message $message){
         if(strstr($message->getContent(), '!mp')){
             $arg = explode('!mp ', $message->getContent());
             $arg = isset($arg[1]) ? $arg[1] : '';
             $rs = $this->createMP($message, $arg);
-            $msg = new ReplyMessage($message);
-            $msg->setContent($rs);
-            $this->send($msg);
-            $this->getServer()->getLogger()->info($message->getUser()->getNick($message->getGroup()) . ' 创建了MP ' . $arg);
+            MainLogger::info($message->getUser()->getcard() . ' 创建/参加了MP ' . $arg);
+            new Message($message, $rs, true);
    	    }
     }
 
