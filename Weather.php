@@ -85,7 +85,7 @@ class Weather extends PluginBase{
         return $message[mt_rand(0, count($message) - 1)];
     }
 
-    public function onCall($server, $arg){
+    public function onCommand($server, $arg){
         if($arg[0] == '天气提醒'){
             if(!isset($arg[1]) || !isset($arg[2]) || !isset($arg[3])){
                 MainLogger::warning('缺少必要参数 请使用 天气提醒 [添加/删除] [名片] [城市]');
