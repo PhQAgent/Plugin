@@ -7,7 +7,7 @@ use phqagent\console\CommandManager;
 use phqagent\console\TextFormat;
 use phqagent\message\Message;
 
-class GenericClient extends PluginBase{
+class DevTools extends PluginBase{
 
     private $messagelist = [];
 
@@ -15,7 +15,8 @@ class GenericClient extends PluginBase{
         CommandManager::register('list', $this);
         CommandManager::register('reply', $this);
         CommandManager::register('send', $this);
-        MainLogger::success('交互客户端插件已加载');
+        CommandManager::register('eval', $this);
+        MainLogger::success('开发测试工具插件已加载');
     }
 
     public function onMessageReceive(Message $msg){
@@ -42,6 +43,17 @@ class GenericClient extends PluginBase{
                     }
                 }else{
                     MainLogger::warning('用法: reply [消息ID] [回复内容]');
+                }
+                break;
+            case 'eval':
+                if(isset($args[1])){
+                    try{
+                        eval($args[1]);
+                    }catch(\Throwable $t){
+                        MainLogger::alert($t->getMessage());
+                    }
+                }else{
+                    MainLogger::warning('用法: eval [即时指令]');
                 }
                 break;
         }
