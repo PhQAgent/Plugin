@@ -1,6 +1,5 @@
 <?php
 namespace plugin;
-use phqagent\Server;
 use phqagent\plugin\PluginBase;
 use phqagent\console\MainLogger;
 use phqagent\message\Message;
@@ -75,6 +74,7 @@ class RBQpp extends PluginBase{
             $text = "好的! 胶布, 皮鞭, 蜡烛 ... 都准备好了哦～";
             new Message($msg, $text, true);
             $group->banMember($rbq, 60);
+            unset($this->block[$group->getUin()][$user->getUin()]);
             return ;
         }else{
             $text = $user->getCard() . " 你根本就不是欧皇, 下一抽就决定是你了!";
