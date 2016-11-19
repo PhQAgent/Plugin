@@ -17,6 +17,9 @@ class Repeat extends PluginBase{
             if(substr($message->getContent(), 0, 1) == '!'){
                 return ;
             }
+            if(substr($message->getContent(), 0, 1) == '/'){
+                return ;
+            }
             $gid = $message->getGroup()->getGid();
             $msg = $message->getContent();
             if(!isset($this->data[$gid])){

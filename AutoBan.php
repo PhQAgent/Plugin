@@ -3,6 +3,7 @@ namespace plugin;
 use phqagent\plugin\PluginBase;
 use phqagent\console\MainLogger;
 use phqagent\message\Message;
+use phqagent\element\Group;
 
 class AutoBan extends PluginBase{
 
@@ -19,7 +20,7 @@ class AutoBan extends PluginBase{
     public function onMessageReceive(Message $message){
         if($message->getType() == Message::GROUP){
             $group = $message->getFrom();
-            if($group->getPermission() == 'manage' || $group->getPermission() == 'owner'){
+            if($group->getPermission() >= Group::MANAGE){
                 $this->logMessage($message);
                 $this->processAlert($message);
             }
@@ -28,6 +29,11 @@ class AutoBan extends PluginBase{
             $this->log = [];
             MainLogger::info('统计时间重置');
             $this->time = time();
+        }
+        if($message->getContent() == '/ban me'){
+            $group = $message->getFrom();
+            $user = $message->getSend();
+            $group->banMember($user, 60);
         }
     }
 
