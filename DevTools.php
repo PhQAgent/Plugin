@@ -20,11 +20,13 @@ class DevTools extends PluginBase{
     }
 
     public function onMessageReceive(Message $msg){
-        $logstring = TextFormat::AQUA . '[' . $this->logMessage($msg) . ']'.
-                     TextFormat::YELLOW . '[来源: ' . $msg->getFrom()->getName() . ' uin: ' . $msg->getFrom()->getUin() . ' gid: ' . $msg->getFrom()->getGid() . ' gc: ' . $msg->getFrom()->getNumber() . ']'.
-                     TextFormat::PURPLE . '[发送者: ' . $msg->getSend()->getName() . ' uin: ' . $msg->getSend()->getUin() . ' account: ' . $msg->getSend()->getAccount() . '] '.
-                     TextFormat::RESET . $msg->getContent();
-        MainLogger::info($logstring);
+        if($msg->getType() == Message::GROUP){
+            $logstring = TextFormat::AQUA . '[' . $this->logMessage($msg) . ']'.
+                        TextFormat::YELLOW . '[来源: ' . $msg->getFrom()->getName() . ' uin: ' . $msg->getFrom()->getUin() . ' gid: ' . $msg->getFrom()->getGid() . ' gc: ' . $msg->getFrom()->getNumber() . ']'.
+                        TextFormat::PURPLE . '[发送者: ' . $msg->getSend()->getName() . ' uin: ' . $msg->getSend()->getUin() . ' account: ' . $msg->getSend()->getAccount() . '] '.
+                        TextFormat::RESET . $msg->getContent();
+            MainLogger::info($logstring);
+        }
     }
 
     public function onCommand(Server $server, $args){

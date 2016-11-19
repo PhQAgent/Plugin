@@ -49,9 +49,10 @@ class RBQpp extends PluginBase{
             return ;
         }
         $keys = array_keys($this->log[$group->getUin()]);
+        print_r($keys);
         $rbq = $keys[mt_rand(0, count($keys) - 1)];
-        if($rbq === $user->getUin()){
-            $text = $user->getCard() . " 脸太黑, 只能当别人的RBQ, 下一抽一定是你哦~";
+        if($rbq == $user->getUin()){
+            $text = $user->getCard() . " 脸太黑, 只能当别人的RBQ, 我极大地加强了你是下一抽的概率哦~";
             new Message($msg, $text, true);
             unset($this->log[$group->getUin()]);
             return ;
@@ -77,7 +78,7 @@ class RBQpp extends PluginBase{
             unset($this->block[$group->getUin()][$user->getUin()]);
             return ;
         }else{
-            $text = $user->getCard() . " 你根本就不是欧皇, 下一抽就决定是你了!";
+            $text = $user->getCard() . " 你根本就不是欧皇, 我极大地加强了你是下一抽的概率哦~";
             new Message($msg, $text, true);
             unset($this->log[$group->getUin()]);
             return ;

@@ -6,8 +6,8 @@ use phqagent\message\Message;
 
 class AutoBan extends PluginBase{
 
-    const RANGE = 5;
-    const LIMIT = 6;
+    const RANGE = 10;
+    const LIMIT = 8;
     private $log = [];
     private $time = 0;
 

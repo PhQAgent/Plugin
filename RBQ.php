@@ -30,7 +30,7 @@ class RBQ extends PluginBase{
     private $map;
 
     public function onLoad(){
-        $this->conf = $this->getDataDir('RBQ').'rbq.json';
+        $this->conf = $this->getDataDir() . 'rbq.json';
         if(!file_exists($this->conf)){
             MainLogger::warning('初始化配置数据库');
             $this->saveDB();

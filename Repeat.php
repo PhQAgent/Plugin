@@ -6,11 +6,10 @@ use phqagent\console\MainLogger;
 
 class Repeat extends PluginBase{
 
-    private $data;
+    private $data = [];
 
     public function onLoad(){
         MainLogger::info('自动复读插件已加载');
-        $this->data = [];
     }
 
     public function onMessageReceive(Message $message){
